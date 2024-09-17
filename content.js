@@ -212,7 +212,6 @@ function showDetailedInfo(event) {
       "Font Variant": computedStyle.fontVariant,
       "Letter Spacing": computedStyle.letterSpacing,
       "Text Transform": computedStyle.textTransform,
-      "Text Decoration": rgbToHex(computedStyle.textDecoration),
     };
 
     const cssProperties = {
