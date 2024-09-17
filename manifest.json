@@ -3,7 +3,7 @@
   "name": "Font Inspector",
   "version": "1.0",
   "description": "Shows font details when hovering over text.",
-  "permissions": ["activeTab", "scripting", "clipboardWrite"],
+  "permissions": ["activeTab", "scripting", "clipboardWrite", "contextMenus"],
   "background": {
     "service_worker": "background.js"
   },

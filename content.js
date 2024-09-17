@@ -67,7 +67,10 @@ function initStatusBanner() {
     statusBanner.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)";
     statusBanner.style.zIndex = "10001";
     statusBanner.style.pointerEvents = "none"; // Prevent interaction
-    statusBanner.innerText = "Font Inspection Active";
+    statusBanner.innerHTML = `
+      Font Inspection Active<br>
+      <small>Press <strong>Esc</strong> to exit</small>
+    `;
     document.body.appendChild(statusBanner);
   }
 }
