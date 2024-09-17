@@ -278,10 +278,9 @@ function showDetailedInfo(event) {
     copyMessage.id = "copy-message";
     copyMessage.textContent = "CSS Copied!";
     infoBox.appendChild(copyMessage);
+    infoBox.style.display = "block";
 
     positionInfoBox(event);
-
-    infoBox.style.display = "block";
   }
 }
 
@@ -298,8 +297,8 @@ function positionInfoBox(event) {
   const clickX = event.clientX;
   const clickY = event.clientY;
 
-  const infoBoxWidth = infoBox.offsetWidth || 400;
-  const infoBoxHeight = infoBox.offsetHeight || 462;
+  const infoBoxWidth = infoBox.offsetWidth;
+  const infoBoxHeight = infoBox.offsetHeight;
   let left = clickX;
   let top = clickY;
 
