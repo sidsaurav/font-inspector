@@ -156,7 +156,7 @@ function inspectFont(event) {
     const computedStyle = window.getComputedStyle(target);
     let fontStyle = computedStyle.fontFamily;
     const fontSize = computedStyle.fontSize;
-    const fontColor = computedStyle.color;
+    const fontColor = rgbToHex(computedStyle.color);
 
     let fontList = fontStyle.split(",");
     if (fontList.length > 3) {
@@ -169,6 +169,7 @@ function inspectFont(event) {
         <strong>Font Family:</strong> ${fontStyle}<br>
         <strong>Font Size:</strong> ${fontSize}<br>
         <strong>Color:</strong> ${fontColor}
+        <span style="display:inline-block; width:16px; height:16px; background-color:${fontColor}; border:1px solid #000; margin-left:10px;"></span>
       </div>
     `;
 
@@ -201,7 +202,7 @@ function showDetailedInfo(event) {
     const fontProperties = {
       "Font Family": computedStyle.fontFamily,
       "Font Size": computedStyle.fontSize,
-      Color: computedStyle.color,
+      Color: rgbToHex(computedStyle.color),
       "Line Height": computedStyle.lineHeight,
       "Font Weight": computedStyle.fontWeight,
       "Font Style": computedStyle.fontStyle,
@@ -224,13 +225,34 @@ function showDetailedInfo(event) {
       "text-decoration": computedStyle.textDecoration,
     };
 
+    // Generate the correct URL for the SVG icon
+    const copyIconUrl = chrome.runtime.getURL("assets/copy.svg");
+
     let infoContent = '<h2>Font Properties</h2><ul class="font-properties">';
     for (const [propName, propValue] of Object.entries(fontProperties)) {
-      infoContent += `<li><strong>${propName}:</strong> ${propValue}</li>`;
+      if (propName === "Color") {
+        infoContent += `
+            <li style="color: black;">
+              <strong>${propName}:</strong> ${propValue}
+              <span style="display:inline-block; width:16px; height:16px; background-color:${propValue}; border:1px solid #000; margin-left:10px;"></span>
+              <button id="copyColorButton" style="background:none;border:none;cursor:pointer;margin-left:5px;">
+                <img src="${copyIconUrl}" alt="Copy color" style="width:16px; height:16px;">
+              </button>
+              <span id="color-copy-message" style="color: green; font-size: 12px; display: none; margin-left: 5px;">Color Copied!</span>
+            </li>`;
+      } else {
+        infoContent += `<li><strong>${propName}:</strong> ${propValue}</li>`;
+      }
     }
     infoContent += "</ul>";
 
     infoBox.innerHTML = infoContent;
+
+    // Event listener for copying the color
+    document.getElementById("copyColorButton").addEventListener("click", () => {
+      copyToClipboard(fontProperties["Color"]);
+      showColorCopyMessage();
+    });
 
     const copyButton = document.createElement("button");
     copyButton.textContent = "Copy CSS";
@@ -263,11 +285,13 @@ function showDetailedInfo(event) {
   }
 }
 
+function showColorCopyMessage() {
+  const colorCopyMessage = document.getElementById("color-copy-message");
+  colorCopyMessage.style.display = "inline"; // Show the "Color Copied!" message
+}
+
 function showCopyMessage() {
   copyMessage.style.display = "block"; // Show the "CSS Copied!" message
-  setTimeout(() => {
-    copyMessage.style.display = "none"; // Hide the message after 3 seconds
-  }, 3000);
 }
 
 function positionInfoBox(event) {
@@ -406,6 +430,22 @@ function handleKeydown(event) {
   if (event.key === "Escape") {
     stopFontInspection();
   }
+}
+
+function rgbToHex(rgb) {
+  const result = rgb.match(/\d+/g);
+  return (
+    "#" +
+    (
+      (1 << 24) +
+      (parseInt(result[0]) << 16) +
+      (parseInt(result[1]) << 8) +
+      parseInt(result[2])
+    )
+      .toString(16)
+      .slice(1)
+      .toUpperCase()
+  );
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
