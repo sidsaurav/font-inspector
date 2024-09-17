@@ -232,7 +232,7 @@ function showDetailedInfo(event) {
     for (const [propName, propValue] of Object.entries(fontProperties)) {
       if (propName === "Color") {
         infoContent += `
-            <li style="color: black;">
+            <li >
               <strong>${propName}:</strong> ${propValue}
               <span style="display:inline-block; width:16px; height:16px; background-color:${propValue}; border:1px solid #000; margin-left:10px;"></span>
               <button id="copyColorButton" style="background:none;border:none;cursor:pointer;margin-left:5px;">
